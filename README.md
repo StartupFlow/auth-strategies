@@ -16,5 +16,3 @@ B --> |Yes| D[Error message and invite to log in]
 C --> |Valid code| E[User can finish the Sign Up Process]
 C --> |Invalid code| F[Check the provided code or request another code if it expired]
 ```
->>>>>>> ed2e0d3 (feat: init the project by adding all the different libraries and ui components)
->>>>>>> 6f4426e (feat(auth): init)

@@ -12,18 +12,18 @@ export default function SignupEmail({
   return (
     <Tailwind>
       <E.Html lang="en" dir="ltr">
-        <E.Preview>Your login code for AfricaZon</E.Preview>
+        <E.Preview>Your login code for Bloomflow Workfshop</E.Preview>
         <E.Body className="bg-gray-50 text-slate-900">
           <E.Container className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 bg-white shadow-md rounded-lg">
             <E.Heading className="text-center text-2xl font-bold">
-              Complete your login to AfricaZon
+              Complete your login to Bloomflow Workfshop
             </E.Heading>
 
             <p className="text-gray-700 text-lg line-height-6">
               <E.Text>
                 A unique login code has been sent to you. Click the link below
-                to complete your login and start exploring AfricaZon&apos;s vast
-                selection of products and services.
+                to complete your login and start exploring Bloomflow
+                Workfshop&apos;s vast selection of products and services.
               </E.Text>
             </p>
             <E.Button
@@ -45,8 +45,8 @@ export default function SignupEmail({
             </p>
             <p className="mt-3 text-gray-700 text-lg line-height-6">
               <E.Text>
-                Thank you for using AfricaZon. We&apos;re excited to have you
-                onboard!
+                Thank you for using Bloomflow Workfshop. We&apos;re excited to
+                have you onboard!
               </E.Text>
             </p>
           </E.Container>

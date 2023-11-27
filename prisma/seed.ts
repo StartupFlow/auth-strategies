@@ -36,7 +36,7 @@ async function seed() {
     )
   );
 
-  const totalUsers = 5;
+  const totalUsers = 10;
 
   for (let index = 0; index < totalUsers; index++) {
     const userData = createUser();

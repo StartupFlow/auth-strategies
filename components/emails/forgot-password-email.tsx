@@ -14,11 +14,13 @@ export default function ForgotPasswordEmail({
   return (
     <Tailwind>
       <E.Html lang="en" dir="ltr">
-        <E.Preview>Reset your password for AfricaZon, {username} </E.Preview>
+        <E.Preview>
+          Reset your password for Bloomflow Workshop, {username}{" "}
+        </E.Preview>
         <E.Body className="bg-gray-100 text-slate-900">
           <E.Container className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 bg-white shadow-md rounded-lg">
             <E.Heading className="text-center text-2xl font-bold">
-              AfricaZon Password Reset
+              Bloomflow Workshop Password Reset
             </E.Heading>
             <p>
               <E.Text className="text-gray-700 text-lg line-height-6">
@@ -54,8 +56,8 @@ export default function ForgotPasswordEmail({
 
             <p>
               <E.Text className="mt-3 text-gray-700 text-lg line-height-6">
-                Thank you for using AfricaZon. We&apos;re looking forward to
-                seeing you soon!
+                Thank you for using Bloomflow Workshop. We&apos;re looking
+                forward to seeing you soon!
               </E.Text>
             </p>
           </E.Container>

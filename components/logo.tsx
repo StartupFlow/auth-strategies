@@ -14,7 +14,9 @@ export const Logo = () => {
           alt="Logo"
           className="w-[40px] h-[40px]"
         />
-        <p className={cn("font-semibold", poppinsFont.className)}>AfricaZon</p>
+        <p className={cn("font-semibold", poppinsFont.className)}>
+          Bloomflow Workshop
+        </p>
       </div>
     </Link>
   );
