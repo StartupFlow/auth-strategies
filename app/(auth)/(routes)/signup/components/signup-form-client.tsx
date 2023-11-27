@@ -3,13 +3,11 @@ import { ErrorList, Field } from "@/components/ui/form";
 import { StatusButton } from "@/components/ui/status-button";
 import { SignUpSchema } from "@/lib/user-validation";
 
-import { magicLinkAction } from "@/actions/auth/magic-link.actions";
 import { Spacer } from "@/components/spacer";
 import { conform, useForm } from "@conform-to/react";
 import { getFieldsetConstraint, parse } from "@conform-to/zod";
 import { ArrowRight } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { toast } from "sonner";
 
 const SignupFormClient = () => {
   const searchParams = useSearchParams();
