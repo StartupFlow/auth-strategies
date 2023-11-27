@@ -1,16 +1,37 @@
 "use server";
 
 import { getPasswordHash, getSessionExpirationDate } from "@/lib/auth.server";
+<<<<<<< HEAD
+=======
+import { createUserSession, getCurrentSession } from "@/lib/manage-session";
+>>>>>>> fdaf082 (feat(auth): setup the project with all configs and helpers)
 import prisma from "@/lib/prismadb";
 import { SignUpFormSchema } from "@/lib/user-validation";
 import { parse } from "@conform-to/zod";
 import { User } from "@prisma/client";
+<<<<<<< HEAD
 import { z } from "zod";
 
 // TODO create an asynchronous requireOnboardingEmail function
 // 1. get the email from the helper function getCurrentSession using the onboardingEmailSessionKey
 // 2. if there is no email, redirect the user to the "/signup" page
 // 3. return the email
+=======
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { z } from "zod";
+import { onboardingEmailSessionKey, sessionKey } from "./constants";
+
+const requireOnboardingEmail = async () => {
+  const email = getCurrentSession(onboardingEmailSessionKey);
+
+  if (!email) {
+    return redirect("/signup");
+  }
+
+  return email;
+};
+>>>>>>> fdaf082 (feat(auth): setup the project with all configs and helpers)
 
 const signupUser = async ({
   email,
@@ -18,13 +39,21 @@ const signupUser = async ({
   password,
   name,
 }: {
+<<<<<<< HEAD
   email: User["email"]; // I like to communicate to ley you know where the type is coming from. We can also just use "email: string"
+=======
+  email: User["email"];
+>>>>>>> fdaf082 (feat(auth): setup the project with all configs and helpers)
   username: User["username"];
   name: User["name"];
   password: string;
 }) => {
   const hashedPassword = await getPasswordHash(password);
+<<<<<<< HEAD
   // wih prisma, you can create a user and a session in one query. That's awesome!
+=======
+
+>>>>>>> fdaf082 (feat(auth): setup the project with all configs and helpers)
   return prisma.session.create({
     data: {
       expirationDate: getSessionExpirationDate(),
