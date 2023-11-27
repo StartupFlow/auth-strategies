@@ -1,13 +1,24 @@
 "use server";
 import { parse } from "@conform-to/zod";
+<<<<<<< HEAD
 import { z } from "zod";
 
+=======
+import { redirect } from "next/navigation";
+import React from "react";
+import { z } from "zod";
+
+import SignupEmail from "@/components/emails/signup-email";
+>>>>>>> 1f29132 (feat(auth): setup the project with all configs and helpers)
 import { prepareVerification } from "@/lib/auth.server";
 import { sendEmail } from "@/lib/email";
 import prisma from "@/lib/prismadb";
 import { SignUpSchema } from "@/lib/user-validation";
 import { startAndStopMockedServer } from "@/mocks";
+<<<<<<< HEAD
 import { redirect } from "next/navigation";
+=======
+>>>>>>> 1f29132 (feat(auth): setup the project with all configs and helpers)
 
 export const magicLinkAction = async (formData: FormData) => {
   startAndStopMockedServer();
