@@ -53,44 +53,18 @@ export async function validateRequest(body: FormData) {
 
   const { value: submissionValue } = submission;
 
-  async function deleteVerification() {
-    await prisma.verification.delete({
-      where: {
-        target_type: {
-          type: submissionValue[typeQueryParam],
-          target: submissionValue[targetQueryParam],
-        },
-      },
-    });
-  }
-
-  const target = submissionValue[targetQueryParam];
-
-  const getUserName = async () => {
-    const user = await prisma.user.findFirstOrThrow({
-      where: { OR: [{ email: target }, { username: target }] },
-      select: { username: true },
-    });
-    return user.username;
-  };
+  // TODO create a deleteVerification function
+  // it should delete the verification for the given target and type
+  // since target and type are unique, you can use the constraint "target_type" to find the verification
+  // try to de explicit by using typeQueryParam and targetQueryParam
 
   switch (submissionValue[typeQueryParam]) {
     case "onboarding": {
-      await deleteVerification();
-      void setVerificationSessionStorage(
-        onboardingEmailSessionKey,
-        submissionValue[targetQueryParam]
-      );
-      return redirect("/onboarding");
-    }
-    case "reset-password": {
-      await deleteVerification();
-      void deleteSession(sessionKey);
-      void setVerificationSessionStorage(
-        resetPasswordUsernameSessionKey,
-        await getUserName()
-      );
-      return redirect("/reset-password");
+      // TDDO uncomment this after creating deleteVerification function
+      // 1. await deleteVerification();
+      // 2. import setVerificationSessionStorage from "@/lib/verification-storage" and it takes two arguments
+      // the first should be onboardingEmailSessionKey and the second should be submissionValue[targetQueryParam]
+      // 3. return redirect to "/onboarding" page
     }
   }
 }
