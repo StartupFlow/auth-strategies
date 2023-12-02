@@ -2,11 +2,12 @@
 import { parse } from "@conform-to/zod";
 import { z } from "zod";
 
+import { prepareVerification } from "@/lib/auth.server";
 import { sendEmail } from "@/lib/email";
 import prisma from "@/lib/prismadb";
 import { SignUpSchema } from "@/lib/user-validation";
 import { startAndStopMockedServer } from "@/mocks";
-import { prepareVerification } from "@/lib/auth.server";
+import { redirect } from "next/navigation";
 
 export const magicLinkAction = async (formData: FormData) => {
   startAndStopMockedServer();
@@ -85,17 +86,13 @@ export const magicLinkAction = async (formData: FormData) => {
   //   otp,
   // }),
 
-  // const response = await sendEmail({
-
-  // });
-
   // TODO uncomment the following line to redirect the user
-  // if (response.status === "success") {
-  //    return redirect(redirectTo.toString());
-  // } else {
-  //   return {
-  //     status: "error",
-  //     message: "Error while sending email",
-  //   } as const;
-  // }
+  if (response.status === "success") {
+    return redirect(redirectTo.toString());
+  } else {
+    return {
+      status: "error",
+      message: "Error while sending email",
+    } as const;
+  }
 };

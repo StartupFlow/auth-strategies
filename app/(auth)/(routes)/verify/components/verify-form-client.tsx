@@ -21,8 +21,7 @@ import { toast } from "sonner";
 
 const VerifyFormClient = () => {
   const searchParams = useSearchParams();
-  // TODO uncomment this once you have updated the auth.schema.ts
-  // const type = VerificationTypeSchema.parse(searchParams.get(typeQueryParam));
+  const type = VerificationTypeSchema.parse(searchParams.get(typeQueryParam));
   const checkEmail = (
     <>
       <h1 className="text-h1">Check your email</h1>
@@ -32,8 +31,7 @@ const VerifyFormClient = () => {
     </>
   );
   const headings: Record<VerificationTypes, React.ReactNode> = {
-    // TODO
-    // enjoy the power of typescript. Pick onboarding and set it to checkEmail
+    onboarding: checkEmail,
   };
 
   const [form, fields] = useForm({
@@ -59,10 +57,7 @@ const VerifyFormClient = () => {
   };
   return (
     <div className="container flex flex-col justify-center pb-32 pt-20">
-      <div className="text-center">
-        {/* TODO Uncomment this */}
-        {/* {headings[type]} */}
-      </div>
+      <div className="text-center">{headings[type]}</div>
 
       <Spacer size="xs" />
 

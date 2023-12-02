@@ -7,17 +7,12 @@ import {
 } from "@/lib/auth.schema";
 import { isCodeValid } from "@/lib/auth.server";
 
-import { deleteSession } from "@/lib/manage-session";
 import prisma from "@/lib/prismadb";
 import { setVerificationSessionStorage } from "@/lib/verification-storage";
 import { parse } from "@conform-to/zod";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import {
-  onboardingEmailSessionKey,
-  resetPasswordUsernameSessionKey,
-  sessionKey,
-} from "./constants";
+import { onboardingEmailSessionKey } from "./constants";
 
 export async function validateRequest(body: FormData) {
   const submission = await parse(body, {
@@ -53,18 +48,25 @@ export async function validateRequest(body: FormData) {
 
   const { value: submissionValue } = submission;
 
-  // TODO create a deleteVerification function
-  // it should delete the verification for the given target and type
-  // since target and type are unique, you can use the constraint "target_type" to find the verification
-  // try to de explicit by using typeQueryParam and targetQueryParam
+  async function deleteVerification() {
+    await prisma.verification.delete({
+      where: {
+        target_type: {
+          type: submissionValue[typeQueryParam],
+          target: submissionValue[targetQueryParam],
+        },
+      },
+    });
+  }
 
   switch (submissionValue[typeQueryParam]) {
     case "onboarding": {
-      // TDDO uncomment this after creating deleteVerification function
-      // 1. await deleteVerification();
-      // 2. import setVerificationSessionStorage from "@/lib/verification-storage" and it takes two arguments
-      // the first should be onboardingEmailSessionKey and the second should be submissionValue[targetQueryParam]
-      // 3. return redirect to "/onboarding" page
+      await deleteVerification();
+      void setVerificationSessionStorage(
+        onboardingEmailSessionKey,
+        submissionValue[targetQueryParam]
+      );
+      return redirect("/onboarding");
     }
   }
 }

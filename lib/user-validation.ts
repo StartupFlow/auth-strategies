@@ -70,11 +70,13 @@ export const SignUpFormSchema = z
     }
   });
 
+const fakeUsername = faker.person.firstName("male").toLowerCase();
+
 export const SignUpFormDefaultValues = {
-  username: faker.person.firstName("male"),
+  username: fakeUsername,
   name: faker.person.firstName("male"),
-  password: "secret-password",
-  confirmPassword: "secret-password",
+  password: fakeUsername,
+  confirmPassword: fakeUsername,
 };
 
 export const SignUpSchema = z.object({

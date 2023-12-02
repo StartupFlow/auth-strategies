@@ -1,25 +1,16 @@
 "use server";
 
 import { getPasswordHash, getSessionExpirationDate } from "@/lib/auth.server";
-import { createUserSession, getCurrentSession } from "@/lib/manage-session";
 import prisma from "@/lib/prismadb";
 import { SignUpFormSchema } from "@/lib/user-validation";
 import { parse } from "@conform-to/zod";
 import { User } from "@prisma/client";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 import { z } from "zod";
-import { onboardingEmailSessionKey, sessionKey } from "./constants";
 
-const requireOnboardingEmail = async () => {
-  const email = getCurrentSession(onboardingEmailSessionKey);
-
-  if (!email) {
-    return redirect("/signup");
-  }
-
-  return email;
-};
+// TODO create an asynchronous requireOnboardingEmail function
+// 1. get the email from the helper function getCurrentSession using the onboardingEmailSessionKey
+// 2. if there is no email, redirect the user to the "/signup" page
+// 3. return the email
 
 const signupUser = async ({
   email,
@@ -27,13 +18,13 @@ const signupUser = async ({
   password,
   name,
 }: {
-  email: User["email"];
+  email: User["email"]; // I like to communicate to ley you know where the type is coming from. We can also just use "email: string"
   username: User["username"];
   name: User["name"];
   password: string;
 }) => {
   const hashedPassword = await getPasswordHash(password);
-
+  // wih prisma, you can create a user and a session in one query. That's awesome!
   return prisma.session.create({
     data: {
       expirationDate: getSessionExpirationDate(),
@@ -58,7 +49,7 @@ const signupUser = async ({
 };
 
 export const signupAction = async (formData: FormData) => {
-  const email = await requireOnboardingEmail();
+  const email = ""; // TODO get the email from the requireOnboardingEmail function
 
   const submission = await parse(formData, {
     schema: SignUpFormSchema.superRefine(async (data, ctx) => {
@@ -95,16 +86,15 @@ export const signupAction = async (formData: FormData) => {
 
   const { session, remember, redirectTo } = submission.value;
 
-  // 1. create a session for the user
-  void createUserSession({
-    name: sessionKey,
-    value: session.id,
-    expires: remember ? session.expirationDate : undefined,
-  });
+  // TODO 1. create a session for the user by using the helper function createUserSession
+  //   with the following parameters:
+  //   name: sessionKey
+  //   value: session.id
+  //   expires: remember ? session.expirationDate : undefined
 
-  // 2. remove the temporary onboarding cookie
-  void cookies().delete(onboardingEmailSessionKey);
+  // TODO
+  // 1. delete the temporary onboarding email session by using the helper function deleteSession with the following parameter: onboardingEmailSessionKey
 
-  // 3. redirect the user
-  redirect(redirectTo ?? "/");
+  // TODO
+  // redirect the user to the redirectTo path or "/" if redirectTo is undefined
 };
