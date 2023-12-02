@@ -10,7 +10,6 @@ import { prepareVerification } from "@/lib/auth.server";
 import { sendEmail } from "@/lib/email";
 import prisma from "@/lib/prismadb";
 import { SignUpSchema } from "@/lib/user-validation";
-import { startAndStopMockedServer } from "@/mocks";
 
 export const magicLinkAction = async (formData: FormData) => {
   // TODO import { startAndStopMockedServer } from "@/mocks" to intercept the request
