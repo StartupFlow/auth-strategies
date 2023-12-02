@@ -4,7 +4,7 @@ export const codeQueryParam = "code";
 export const targetQueryParam = "target";
 export const typeQueryParam = "type";
 export const redirectToQueryParam = "redirectTo";
-export const types = ["onboarding"] as const;
+export const types = ["onboarding", "reset-password"] as const;
 export const VerificationTypeSchema = z.enum(types);
 export type VerificationTypes = z.infer<typeof VerificationTypeSchema>;
 

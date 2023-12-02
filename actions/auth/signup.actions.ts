@@ -5,13 +5,13 @@ import { getPasswordHash, getSessionExpirationDate } from "@/lib/auth.server";
 import { createUserSession, getCurrentSession } from "@/lib/manage-session";
 
 import prisma from "@/lib/prismadb";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 import { SignUpFormSchema } from "@/lib/user-validation";
 import { parse } from "@conform-to/zod";
 import { User } from "@prisma/client";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { z } from "zod";
-import { onboardingEmailSessionKey } from "./constants";
+import { onboardingEmailSessionKey, sessionKey } from "./constants";
 
 const requireOnboardingEmail = async () => {
   const email = getCurrentSession(onboardingEmailSessionKey);
@@ -29,7 +29,7 @@ const signupUser = async ({
   password,
   name,
 }: {
-  email: User["email"]; // I like to communicate to ley you know where the type is coming from. We can also just use "email: string"
+  email: User["email"];
   username: User["username"];
   name: User["name"];
   password: string;
@@ -98,15 +98,16 @@ export const signupAction = async (formData: FormData) => {
 
   const { session, remember, redirectTo } = submission.value;
 
-  // TODO 1. create a session for the user by using the helper function createUserSession
-  //   with the following parameters:
-  //   name: sessionKey
-  //   value: session.id
-  //   expires: remember ? session.expirationDate : undefined
+  // 1. create a session for the user
+  void createUserSession({
+    name: sessionKey,
+    value: session.id,
+    expires: remember ? session.expirationDate : undefined,
+  });
 
-  // TODO
-  // 1. delete the temporary onboarding email session by using the helper function deleteSession with the following parameter: onboardingEmailSessionKey
+  // 2. remove the temporary onboarding cookie
+  void cookies().delete(onboardingEmailSessionKey);
 
-  // TODO
-  // redirect the user to the redirectTo path or "/" if redirectTo is undefined
+  // 3. redirect the user
+  redirect(redirectTo ?? "/");
 };

@@ -7,12 +7,17 @@ import {
 } from "@/lib/auth.schema";
 import { isCodeValid } from "@/lib/auth.server";
 
+import { deleteSession } from "@/lib/manage-session";
 import prisma from "@/lib/prismadb";
 import { setVerificationSessionStorage } from "@/lib/verification-storage";
 import { parse } from "@conform-to/zod";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { onboardingEmailSessionKey } from "./constants";
+import {
+  onboardingEmailSessionKey,
+  resetPasswordUsernameSessionKey,
+  sessionKey,
+} from "./constants";
 
 export async function validateRequest(body: FormData) {
   const submission = await parse(body, {
@@ -59,6 +64,16 @@ export async function validateRequest(body: FormData) {
     });
   }
 
+  const target = submissionValue[targetQueryParam];
+
+  const getUserName = async () => {
+    const user = await prisma.user.findFirstOrThrow({
+      where: { OR: [{ email: target }, { username: target }] },
+      select: { username: true },
+    });
+    return user.username;
+  };
+
   switch (submissionValue[typeQueryParam]) {
     case "onboarding": {
       await deleteVerification();
@@ -67,6 +82,15 @@ export async function validateRequest(body: FormData) {
         submissionValue[targetQueryParam]
       );
       return redirect("/onboarding");
+    }
+    case "reset-password": {
+      await deleteVerification();
+      void deleteSession(sessionKey);
+      void setVerificationSessionStorage(
+        resetPasswordUsernameSessionKey,
+        await getUserName()
+      );
+      return redirect("/reset-password");
     }
   }
 }

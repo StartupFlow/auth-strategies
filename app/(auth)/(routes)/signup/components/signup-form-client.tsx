@@ -8,6 +8,8 @@ import { conform, useForm } from "@conform-to/react";
 import { getFieldsetConstraint, parse } from "@conform-to/zod";
 import { ArrowRight } from "lucide-react";
 import { useSearchParams } from "next/navigation";
+import { magicLinkAction } from "@/actions/auth/magic-link.actions";
+import { toast } from "sonner";
 
 const SignupFormClient = () => {
   const searchParams = useSearchParams();

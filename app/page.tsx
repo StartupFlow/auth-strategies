@@ -18,6 +18,7 @@ const getUsers = async (searchTerm: string | null) => {
   LEFT JOIN UserImage ON UserImage.userId = User.id
   WHERE User.username LIKE ${like}
   OR User.name LIKE ${like}
+  ORDER BY User.created_at DESC
   LIMIT 50
   `;
   } else {
@@ -32,6 +33,9 @@ const getUsers = async (searchTerm: string | null) => {
             id: true,
           },
         },
+      },
+      orderBy: {
+        createdAt: "desc",
       },
     });
   }

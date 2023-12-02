@@ -32,6 +32,7 @@ const VerifyFormClient = () => {
   );
   const headings: Record<VerificationTypes, React.ReactNode> = {
     onboarding: checkEmail,
+    "reset-password": checkEmail,
   };
 
   const [form, fields] = useForm({
