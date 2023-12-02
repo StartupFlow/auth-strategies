@@ -1,4 +1,3 @@
-import { requireAnonymous } from "@/lib/auth.server";
 import { Metadata } from "next";
 import SignupFormClient from "./components/signup-form-client";
 
@@ -7,7 +6,6 @@ export const metadata: Metadata = {
 };
 
 const SignUpPage = async () => {
-  await requireAnonymous();
   return <SignupFormClient />;
 };
 
