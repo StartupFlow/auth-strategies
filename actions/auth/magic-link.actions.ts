@@ -10,13 +10,13 @@ import { prepareVerification } from "@/lib/auth.server";
 import { sendEmail } from "@/lib/email";
 import prisma from "@/lib/prismadb";
 import { SignUpSchema } from "@/lib/user-validation";
-import { startAndStopMockedServer } from "@/mocks";
 
 export const magicLinkAction = async (formData: FormData) => {
-  startAndStopMockedServer();
+  // TODO import { startAndStopMockedServer } from "@/mocks" to intercept the request
 
   const submission = await parse(formData, {
     schema: SignUpSchema.superRefine(async (data, ctx) => {
+      // we need to check if the user already exists
       const existingUser = await prisma.user.findUnique({
         select: { id: true },
         where: { email: data.email },
@@ -38,6 +38,7 @@ export const magicLinkAction = async (formData: FormData) => {
     return null;
   }
   if (!submission.value) {
+    // this is very helpful since in the client-side, we know exactly what we are dealing with
     return {
       status: "error",
       message: "A user already exists with this email",
@@ -46,12 +47,11 @@ export const magicLinkAction = async (formData: FormData) => {
 
   const { email, redirectTo: postVerificationRedirectTo } = submission.value;
 
-  const { otp, verifyUrl, redirectTo } = await prepareVerification({
-    period: 10 * 60,
-    type: "onboarding",
-    target: email,
-    redirectTo: postVerificationRedirectTo,
-  });
+  // TODO import prepareVerification from "@/lib/auth" to generate the One Time Password
+  // Set the period to 10 minutes (10 * 60)
+  // Set the type to "onboarding"
+  // Set the target to the email
+  // Set the redirectTo to postVerificationRedirectTo
 
   const response = await sendEmail({
     to: email,
