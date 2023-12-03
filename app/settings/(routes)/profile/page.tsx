@@ -1,7 +1,14 @@
+import { twoFAVerificationType } from "@/actions/settings/constantt";
 import { Button } from "@/components/ui/button";
 import { requireUserId } from "@/lib/auth.server";
 import prisma from "@/lib/prismadb";
-import { Camera, KeyRound, Mail } from "lucide-react";
+import {
+  Camera,
+  KeyRound,
+  LockKeyhole,
+  Mail,
+  UnlockKeyhole,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import fallback from "../../../../public/user.png";
@@ -24,14 +31,31 @@ const EditUserProfile = async () => {
           id: true,
         },
       },
-      // TODO add a count of sessions
+      _count: {
+        select: {
+          sessions: true,
+        },
+      },
     },
   });
 
-  // TODO uncomment when sessions are added
-  // const sessions =  user._count.sessions;
-  const sessions = 1;
+  const sessions = user._count.sessions;
 
+  // determine whether the user has 2fa by checking for a verification and by the type twoFAVerificationType
+  // and the target being the userId
+  // Set isTwoFAEnabled to true if it exists
+
+  const result = await prisma.verification.findFirst({
+    where: {
+      type: twoFAVerificationType,
+      target: userId,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  const isTwoFAEnabled = Boolean(result);
   return (
     <div className="flex flex-col gap-8">
       <div className="flex justify-center">
@@ -65,6 +89,21 @@ const EditUserProfile = async () => {
             <Mail className="h-4 w-4 mr-3" />
             Change email from{" "}
             <b className="hover:underline ml-1">{user.email}</b>
+          </Link>
+        </div>
+        <div>
+          <Link href="profile/two-factor" className="flex items-center">
+            {isTwoFAEnabled ? (
+              <>
+                <LockKeyhole className="h-4 w-4 mr-3" />
+                ZFA is enabled
+              </>
+            ) : (
+              <>
+                <UnlockKeyhole className="h-4 w-4 mr-3" />
+                Enable 2FA
+              </>
+            )}
           </Link>
         </div>
         <div>

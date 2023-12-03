@@ -122,3 +122,7 @@ export const UserSearchSchema = z.object({
     .nullable()
     .optional(),
 });
+
+export const Verify2faSchema = z.object({
+  code: z.string().min(6).max(6).optional(),
+});

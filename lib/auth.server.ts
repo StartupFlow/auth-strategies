@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import { headers } from "next/headers";
 
 import { sessionKey } from "@/actions/auth/constants";
+import { twoFAVerifyVerificationType } from "@/actions/settings/constantt";
 import { Password, User } from "@prisma/client";
 import { redirect } from "next/navigation";
 import {
@@ -104,7 +105,7 @@ export async function isCodeValid({
   target,
 }: {
   code: string;
-  type: VerificationTypes;
+  type: VerificationTypes | typeof twoFAVerifyVerificationType; // we are not adding this type to the valid types in general because it's a temporary type
   target: string;
 }) {
   const verification = await prisma.verification.findUnique({

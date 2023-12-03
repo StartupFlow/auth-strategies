@@ -92,5 +92,8 @@ export async function validateRequest(body: FormData) {
       );
       return redirect("/reset-password");
     }
+    case "2fa": {
+      throw new Error("Not implemented");
+    }
   }
 }

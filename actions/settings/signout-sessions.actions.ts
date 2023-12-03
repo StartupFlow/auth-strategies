@@ -18,9 +18,14 @@ export const signOutSessionsAction = async (
     } as const;
   }
 
-  // TODO: head to the database and delete all sessions for "this user" except the current one
-  // HINT: you can use the `deleteMany` method on the `session` table
-
+  await prisma.session.deleteMany({
+    where: {
+      userId,
+      id: {
+        not: sessionId,
+      },
+    },
+  });
   revalidatePath("/settings/profile");
   return {
     status: "success",
