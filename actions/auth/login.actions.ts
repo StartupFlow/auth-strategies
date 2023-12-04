@@ -1,6 +1,7 @@
 "use server";
 
 import {
+  getRedirectToUrl,
   getSessionExpirationDate,
   verifyUserPassword,
 } from "@/lib/auth.server";
@@ -11,7 +12,8 @@ import { parse } from "@conform-to/zod";
 import { User } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { sessionKey } from "./constants";
+import { twoFAVerificationType } from "../settings/constantt";
+import { sessionKey, unverified2faSessionKey } from "./constants";
 
 export const loginAction = async (formData: FormData) => {
   const submission = await parse(formData, {
@@ -56,13 +58,50 @@ export const loginAction = async (formData: FormData) => {
 
   const { session, remember, redirectTo } = submission.value;
 
-  void createUserSession({
-    name: sessionKey,
-    value: session.id,
-    expires: remember ? session.expirationDate : undefined,
+  // determine whether the user has 2fa enabled by looking for a verification in the database
+  // with the user's id and the twoFAVerificationType
+  // you're going to need to update the login utility to retrieve the user's id
+
+  // if the user has 2fa enabled, set the session.id in a verification cookie under something like
+  // "unverified-session-id"
+  // also set the user's "remember" preference in the verification cookie
+  // use the getRedirectUrl utility to redirect the user to the verify route/
+
+  // if the user does not have 2fa enabled, then we can follow the old logic
+
+  const verification = await prisma.verification.findUnique({
+    where: {
+      target_type: {
+        type: twoFAVerificationType,
+        target: session.userId,
+      },
+    },
+    select: { id: true },
   });
 
-  redirect(redirectTo ?? "/");
+  const userHas2faEnabled = !!verification;
+
+  if (userHas2faEnabled) {
+    createUserSession({
+      name: unverified2faSessionKey,
+      value: session.id,
+      expires: remember ? session.expirationDate : undefined,
+    });
+
+    const redirectUrl = getRedirectToUrl({
+      type: twoFAVerificationType,
+      target: session.userId,
+    });
+    return redirect(redirectUrl.toString());
+  } else {
+    void createUserSession({
+      name: sessionKey,
+      value: session.id,
+      expires: remember ? session.expirationDate : undefined,
+    });
+
+    redirect(redirectTo ?? "/");
+  }
 };
 
 const login = async ({

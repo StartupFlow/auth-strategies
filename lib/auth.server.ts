@@ -31,7 +31,7 @@ const getDomainUrl = () => {
   return `${protocol}://${host}`;
 };
 
-const getRedirectToUrl = ({
+export const getRedirectToUrl = ({
   type,
   target,
   redirectTo,

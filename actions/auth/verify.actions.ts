@@ -7,7 +7,11 @@ import {
 } from "@/lib/auth.schema";
 import { isCodeValid } from "@/lib/auth.server";
 
-import { deleteSession } from "@/lib/manage-session";
+import {
+  createUserSession,
+  deleteSession,
+  getCurrentSession,
+} from "@/lib/manage-session";
 import prisma from "@/lib/prismadb";
 import { setVerificationSessionStorage } from "@/lib/verification-storage";
 import { parse } from "@conform-to/zod";
@@ -17,6 +21,7 @@ import {
   onboardingEmailSessionKey,
   resetPasswordUsernameSessionKey,
   sessionKey,
+  unverified2faSessionKey,
 } from "./constants";
 
 export async function validateRequest(body: FormData) {
@@ -93,7 +98,29 @@ export async function validateRequest(body: FormData) {
       return redirect("/reset-password");
     }
     case "2fa": {
-      throw new Error("Not implemented");
+      const session = getCurrentSession(unverified2faSessionKey);
+      if (!session) {
+        return;
+      }
+      const currentSession = await prisma.session.findUnique({
+        where: {
+          id: session,
+        },
+        select: {
+          expirationDate: true,
+        },
+      });
+
+      if (!currentSession) {
+        redirect("/login");
+      }
+      deleteSession(unverified2faSessionKey);
+      createUserSession({
+        name: sessionKey,
+        value: session,
+      });
+
+      redirect("/");
     }
   }
 }

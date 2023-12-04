@@ -18,7 +18,6 @@ import {
   typeQueryParam,
 } from "@/lib/auth.schema";
 import { toast } from "sonner";
-import { CheckCheck } from "lucide-react";
 
 const VerifyFormClient = () => {
   const searchParams = useSearchParams();
@@ -34,7 +33,14 @@ const VerifyFormClient = () => {
   const headings: Record<VerificationTypes, React.ReactNode> = {
     onboarding: checkEmail,
     "reset-password": checkEmail,
-    "2fa": "Coucou",
+    "2fa": (
+      <>
+        <h1 className="text-3xl">Check your 2FA app</h1>
+        <p className="mt-3 text-body-md text-muted-foreground">
+          Please enter your 2FA code to verify your identity.
+        </p>
+      </>
+    ),
   };
 
   const [form, fields] = useForm({
